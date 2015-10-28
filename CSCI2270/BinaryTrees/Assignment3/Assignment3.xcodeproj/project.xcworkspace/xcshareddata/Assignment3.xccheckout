@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>989732E2-09F3-4F97-8A0C-2E24B90139C8</string>
+	<key>IDESourceControlProjectName</key>
+	<string>project</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>B0603BEC034F9EFE830D697CDED3B524791F453E</key>
+		<string>https://github.com/albarianjess/CUBoulder.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>CSCI2270/BinaryTrees/Assignment3/Assignment3.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>B0603BEC034F9EFE830D697CDED3B524791F453E</key>
+		<string>../../../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/albarianjess/CUBoulder.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>B0603BEC034F9EFE830D697CDED3B524791F453E</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>B0603BEC034F9EFE830D697CDED3B524791F453E</string>
+			<key>IDESourceControlWCCName</key>
+			<string>CUBoulder</string>
+		</dict>
+	</array>
+</dict>
+</plist>
