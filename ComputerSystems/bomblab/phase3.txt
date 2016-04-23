@@ -1,0 +1,77 @@
+08048bf8 <phase_3>:
+ 8048bf8:       55                      push   %ebp
+ 8048bf9:       89 e5                   mov    %esp,%ebp
+ 8048bfb:       83 ec 38                sub    $0x38,%esp
+ 8048bfe:       8d 45 f4                lea    -0xc(%ebp),%eax
+ 8048c01:       89 44 24 10             mov    %eax,0x10(%esp)
+ 8048c05:       8d 45 ef                lea    -0x11(%ebp),%eax
+ 8048c08:       89 44 24 0c             mov    %eax,0xc(%esp)
+ 8048c0c:       8d 45 f0                lea    -0x10(%ebp),%eax
+ 8048c0f:       89 44 24 08             mov    %eax,0x8(%esp)
+ 8048c13:       c7 44 24 04 3a a4 04    movl   $0x804a43a,0x4(%esp)
+ 8048c1a:       08
+ 8048c1b:       8b 45 08                mov    0x8(%ebp),%eax
+ 8048c1e:       89 04 24                mov    %eax,(%esp)
+ 8048c21:       e8 3a fc ff ff          call   8048860 <__isoc99_sscanf@plt>
+ 8048c26:       83 f8 02                cmp    $0x2,%eax
+ 8048c29:       7f 05                   jg     8048c30 <phase_3+0x38>
+ 8048c2b:       e8 28 06 00 00          call   8049258 <explode_bomb>
+ 8048c30:       83 7d f0 07             cmpl   $0x7,-0x10(%ebp)
+ 8048c34:       0f 87 af 00 00 00       ja     8048ce9 <phase_3+0xf1>
+ 8048c3a:       8b 45 f0                mov    -0x10(%ebp),%eax
+ 8048c3d:       ff 24 85 60 a4 04 08    jmp    *0x804a460(,%eax,4)
+ 8048c44:       b0 67                   mov    $0x67,%al
+ 8048c46:       81 7d f4 99 00 00 00    cmpl   $0x99,-0xc(%ebp)
+ 8048c4d:       0f 84 9d 00 00 00       je     8048cf0 <phase_3+0xf8>
+ 8048c53:       e8 00 06 00 00          call   8049258 <explode_bomb>
+ 8048c58:       b0 67                   mov    $0x67,%al
+ 8048c5a:       e9 91 00 00 00          jmp    8048cf0 <phase_3+0xf8>
+ 8048c5f:       b0 73                   mov    $0x73,%al
+ 8048c61:       81 7d f4 87 01 00 00    cmpl   $0x187,-0xc(%ebp)
+ 8048c68:       0f 84 82 00 00 00       je     8048cf0 <phase_3+0xf8>
+ 8048c6e:       e8 e5 05 00 00          call   8049258 <explode_bomb>
+ 8048c73:       b0 73                   mov    $0x73,%al
+ 8048c75:       eb 79                   jmp    8048cf0 <phase_3+0xf8>
+ 8048c77:       b0 67                   mov    $0x67,%al
+ 8048c79:       81 7d f4 dc 01 00 00    cmpl   $0x1dc,-0xc(%ebp)
+ 8048c80:       74 6e                   je     8048cf0 <phase_3+0xf8>
+ 8048c82:       e8 d1 05 00 00          call   8049258 <explode_bomb>
+ 8048c87:       b0 67                   mov    $0x67,%al
+ 8048c89:       eb 65                   jmp    8048cf0 <phase_3+0xf8>
+ 8048c8b:       b0 69                   mov    $0x69,%al
+ 8048c8d:       83 7d f4 34             cmpl   $0x34,-0xc(%ebp)
+8048c91:       74 5d                   je     8048cf0 <phase_3+0xf8>
+ 8048c93:       e8 c0 05 00 00          call   8049258 <explode_bomb>
+ 8048c98:       b0 69                   mov    $0x69,%al
+ 8048c9a:       eb 54                   jmp    8048cf0 <phase_3+0xf8>
+ 8048c9c:       b0 6b                   mov    $0x6b,%al
+ 8048c9e:       83 7d f4 48             cmpl   $0x48,-0xc(%ebp)
+ 8048ca2:       74 4c                   je     8048cf0 <phase_3+0xf8>
+ 8048ca4:       e8 af 05 00 00          call   8049258 <explode_bomb>
+ 8048ca9:       b0 6b                   mov    $0x6b,%al
+ 8048cab:       eb 43                   jmp    8048cf0 <phase_3+0xf8>
+ 8048cad:       b0 71                   mov    $0x71,%al
+ 8048caf:       81 7d f4 12 03 00 00    cmpl   $0x312,-0xc(%ebp)
+ 8048cb6:       74 38                   je     8048cf0 <phase_3+0xf8>
+ 8048cb8:       e8 9b 05 00 00          call   8049258 <explode_bomb>
+ 8048cbd:       b0 71                   mov    $0x71,%al
+ 8048cbf:       eb 2f                   jmp    8048cf0 <phase_3+0xf8>
+ 8048cc1:       b0 71                   mov    $0x71,%al
+ 8048cc3:       81 7d f4 c1 01 00 00    cmpl   $0x1c1,-0xc(%ebp)
+ 8048cca:       74 24                   je     8048cf0 <phase_3+0xf8>
+ 8048ccc:       e8 87 05 00 00          call   8049258 <explode_bomb>
+ 8048cd1:       b0 71                   mov    $0x71,%al
+ 8048cd3:       eb 1b                   jmp    8048cf0 <phase_3+0xf8>
+ 8048cd5:       b0 78                   mov    $0x78,%al
+ 8048cd7:       81 7d f4 5d 02 00 00    cmpl   $0x25d,-0xc(%ebp)
+ 8048cde:       74 10                   je     8048cf0 <phase_3+0xf8>
+ 8048ce0:       e8 73 05 00 00          call   8049258 <explode_bomb>
+ 8048ce5:       b0 78                   mov    $0x78,%al
+ 8048ce7:       eb 07                   jmp    8048cf0 <phase_3+0xf8>
+ 8048ce9:       e8 6a 05 00 00          call   8049258 <explode_bomb>
+ 8048cee:       b0 69                   mov    $0x69,%al
+ 8048cf0:       3a 45 ef                cmp    -0x11(%ebp),%al
+ 8048cf3:       74 05                   je     8048cfa <phase_3+0x102>
+ 8048cf5:       e8 5e 05 00 00          call   8049258 <explode_bomb>
+ 8048cfa:       c9                      leave
+ 8048cfb:       c3                      ret
