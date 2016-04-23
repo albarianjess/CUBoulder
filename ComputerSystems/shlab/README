@@ -1,11 +1,8 @@
-################
-CS:APP Shell Lab
-################
+#Shell Lab
 
 Files:
 
 Makefile	# Compiles your shell program and runs the tests
-README		# This file
 tsh.c		# The shell program that you will write and hand in
 jobs.c		# routines to manipulate a 'jobs' data structure
 helper-routines	# routines that you will use, but do not need to write
@@ -22,3 +19,17 @@ mysplit.c	# Forks a child that spins for <n> seconds
 mystop.c        # Spins for <n> seconds and sends SIGTSTP to itself
 myint.c         # Spins for <n> seconds and sends SIGINT to itself
 
+
+
+##PURPOSE
+Learn process control and signalling
+Write a Unix shell program that supports job control
+
+##FUNCTIONS
+eval = main routine that parses/interprets command line
+builtin_cmd = recognizes and interprets build-in commands (quit, fg, bg, jobs)
+do_bgfg = implements bg and fg commands
+waitfg = waits for foreground job to complete
+sigchild_handler = catches SIGCHILD signals
+sigint_handler = catches SIGINT (ctrl-c) signals
+sigtstp_handler = catches SIGTSTP (ctrl-z) signals
