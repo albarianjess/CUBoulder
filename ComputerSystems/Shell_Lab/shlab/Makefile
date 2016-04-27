@@ -1,6 +1,6 @@
-# Makefile for the CS:APP Shell Lab
+#Makefile for the CS:APP Shell Lab
 
-TEAM = NOBODY
+TEAM = JessieAlbarian
 VERSION = 1
 DRIVER = ./sdriver.pl
 TSH = ./tsh
@@ -20,7 +20,7 @@ tsh: tsh.o jobs.o helper-routines.o
 # Handin your work
 ##################
 handin:
-	cp tsh.c $(HANDINDIR)/$(TEAM)-$(VERSION)-tsh.c
+	cp tsh.cc $(TEAM)-$(VERSION)-tsh.cc
 
 
 ##################

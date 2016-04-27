@@ -1,8 +1,9 @@
 // 
 // tsh - A tiny shell program with job control
 // 
-// JESSIE ALBARIAN
-//
+// <Put your name and login ID here>
+// Jessie Albarian
+
 
 using namespace std;
 
@@ -35,7 +36,7 @@ int verbose = 0;
 // The code below provides the "prototypes" for those functions
 // so that earlier code can refer to them. You need to fill in the
 // function bodies below.
-// 
+//
 
 void eval(char *cmdline);
 int builtin_cmd(char **argv);
@@ -162,9 +163,35 @@ void eval(char *cmdline)
   // in background mode or FALSE if it should run in FG
   //
   int bg = parseline(cmdline, argv); 
-  if (argv[0] == NULL)  
-    return;   /* ignore empty lines */
+  pid_t pid;
+  struct job_t *job;
+  sigset_t mask;
 
+  if (argv[0] == NULL){
+	return;   /* ignore empty lines */
+  }
+  else if(!builtin_cmd(argv)){
+  	sigprocmask(SIG_BLOCK, &mask, NULL);
+	if((pid = fork()) == 0){
+		sigprocmask(SIG_UNBLOCK, &mask, NULL);
+		setpgid(0, 0);
+		if(execve(argv[0], argv, environ)<0){
+			printf("%s: Command not found.\n", argv[0]);
+			exit(0);
+		}
+	}
+	if(!bg){ //It's a foreground process
+		addjob(jobs, pid, FG, cmdline);
+		sigprocmask(SIG_UNBLOCK, &mask, NULL);
+		waitfg(pid);
+	}
+	else{//It's a background process
+		addjob(jobs, pid, BG, cmdline);
+		sigprocmask(SIG_UNBLOCK, &mask, NULL);
+		job = getjobpid(jobs, pid);
+		printf("[%d] (%d) %s", job->jid, job->pid, cmdline);
+	}
+  }
   return;
 }
 
@@ -179,7 +206,21 @@ void eval(char *cmdline)
 //
 int builtin_cmd(char **argv) 
 {
-  string cmd(argv[0]);
+
+  if(!strcmp(argv[0], "quit")){
+	exit(0);
+  }
+  else if(!strcmp(argv[0], "&")){
+	return 1;
+  }
+  else if(!strcmp(argv[0], "jobs")){
+	listjobs(jobs);
+	return 1;
+  }
+  else if(!strcmp(argv[0], "bg") || !strcmp(argv[0], "fg")){
+	do_bgfg(argv);
+	return 1;
+  }
   return 0;     /* not a builtin command */
 }
 
@@ -189,46 +230,58 @@ int builtin_cmd(char **argv)
 //
 void do_bgfg(char **argv) 
 {
-  struct job_t *jobp=NULL;
-    
-  /* Ignore command if no argument */
-  if (argv[1] == NULL) {
-    printf("%s command requires PID or %%jobid argument\n", argv[0]);
-    return;
-  }
-    
-  /* Parse the required PID or %JID arg */
-  if (isdigit(argv[1][0])) {
-    pid_t pid = atoi(argv[1]);
-    if (!(jobp = getjobpid(jobs, pid))) {
-      printf("(%d): No such process\n", pid);
-      return;
-    }
-  }
-  else if (argv[1][0] == '%') {
-    int jid = atoi(&argv[1][1]);
-    if (!(jobp = getjobjid(jobs, jid))) {
-      printf("%s: No such job\n", argv[1]);
-      return;
-    }
-  }	    
-  else {
-    printf("%s: argument must be a PID or %%jobid\n", argv[0]);
-    return;
-  }
 
-  //
-  // You need to complete rest. At this point,
-  // the variable 'jobp' is the job pointer
-  // for the job ID specified as an argument.
-  //
-  // Your actions will depend on the specified command
-  // so we've converted argv[0] to a string (cmd) for
-  // your benefit.
-  //
-  string cmd(argv[0]);
+	struct job_t *jobp=NULL;
+	struct job_t *job;
+	char *id = argv[1];
+	int jid;
 
-  return;
+	/* Ignore command if no argument */
+	if (argv[1] == NULL) {
+	printf("%s command requires PID or %%jobid argument\n", argv[0]);
+	return;
+	}
+
+	/* Parse the required PID or %JID arg */
+	if (isdigit(argv[1][0])) {
+	pid_t pid = atoi(argv[1]);
+	if (!(jobp = getjobpid(jobs, pid))) {
+	printf("(%d): No such process\n", pid);
+	return;
+	}
+	}
+	else if (argv[1][0] == '%') {
+	int jid = atoi(&argv[1][1]);
+	if (!(jobp = getjobjid(jobs, jid))) {
+	printf("%s: No such job\n", argv[1]);
+	return;
+	}
+	}	    
+	else {
+	printf("%s: argument must be a PID or %%jobid\n", argv[0]);
+	return;
+	}
+	//
+	// You need to complete rest. At this point,
+	// the variable 'jobp' is the job pointer
+	// for the job ID specified as an argument.
+	//
+	// Your actions will depend on the specified command
+	// so we've converted argv[0] to a string (cmd) for
+	// your benefit.
+	//
+	//string cmd(argv[0]);
+	//[2] (10514) ./myspin 5 
+	kill(-(jobp->pid), SIGCONT);
+	if(!strcmp("bg", argv[0])){
+		jobp->state = BG;
+		printf("[%d] (%d) %s", jobp->jid, jobp->pid, jobp->cmdline);
+	}	
+	else if(!strcmp("fg", argv[0])){
+		jobp->state = FG;
+		waitfg(jobp->pid);
+	}
+	return;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -237,7 +290,11 @@ void do_bgfg(char **argv)
 //
 void waitfg(pid_t pid)
 {
-  return;
+	struct job_t *job = getjobpid(jobs, pid);
+	while(job->state == FG){
+		sleep(1);
+	}
+	return;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -256,7 +313,25 @@ void waitfg(pid_t pid)
 //
 void sigchld_handler(int sig) 
 {
-  return;
+	int status;
+	pid_t pid;
+	while((pid=waitpid(-1,&status,WNOHANG|WUNTRACED))>0){ 
+		if(WIFEXITED(status)) 
+			deletejob(jobs,pid);
+		else {
+			if(WIFSIGNALED(status)){
+				if(WTERMSIG(status)==2){
+					printf("Job [%d] (%d) terminated by signal %d\n", pid2jid(pid), pid, WTERMSIG(status));
+				}
+				deletejob(jobs,pid);
+			}
+			else if(WIFSTOPPED(status)){ 	
+				getjobpid(jobs, pid)->state=ST;
+				printf("Job [%d] (%d) stopped by signal %d\n", pid2jid(pid), pid, WSTOPSIG(status));
+			}
+		}
+	}
+	return; 
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -267,7 +342,15 @@ void sigchld_handler(int sig)
 //
 void sigint_handler(int sig) 
 {
-  return;
+	//should terminate the foreground job
+	int pid = fgpid(jobs);
+	if(pid != 0){
+		kill(-pid, SIGINT);
+		//Job [1] (9024) terminated by signal 2
+		printf("Job [%d] (%d) terminated by signal %d\n", pid2jid(pid), pid, sig);
+		deletejob(jobs, pid);
+	}
+	return;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -276,14 +359,27 @@ void sigint_handler(int sig)
 //     the user types ctrl-z at the keyboard. Catch it and suspend the
 //     foreground job by sending it a SIGTSTP.  
 //
-void sigtstp_handler(int sig) 
+void sigtstp_handler(int sig)
 {
-  return;
+	//should stop the foreground job
+	int pid = fgpid(jobs);
+	int jid = pid2jid(pid);
+	if (pid != 0) {
+		//Job [2] (9740) stopped by signal 20
+		printf("Job [%d] (%d) Stopped by signal %d\n", jid, pid, sig);
+		getjobpid(jobs, pid)->state = ST;
+		kill(-pid, SIGTSTP);
+	}
+	return;
+
+
+	
 }
 
 /*********************
  * End signal handlers
  *********************/
+
 
 
 
