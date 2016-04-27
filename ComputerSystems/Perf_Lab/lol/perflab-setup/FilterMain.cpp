@@ -98,42 +98,42 @@ applyFilter(struct Filter *filter, cs1300bmp *input, cs1300bmp *output)
 ///////////////////////////////////////////
   output -> width = input -> width;
   output -> height = input -> height;
-  int value = 0; //take out of loop to eliminate reinitialization of variable
+  int value = 0; //take out of loop
 
-    int dim = filter -> getSize(); //replacing function call w/ constant reduces # of instructions
-    int div = filter -> getDivisor(); //replacing function call w/ constant reduces # of instructions
-    int* getptr = filter -> getData(); //accessing data directly instead of function call reduces # of instructions
-    int inheight = input -> height - 1; //took out of forloop to perform math operation
-    int inwidth = input -> width - 1; //took out of forloop to perform math operation
-
+    int dim = filter -> getSize(); //replacing function call w/ constant
+    int div = filter -> getDivisor(); //replacing function call w/ constant
+    int* getptr = filter -> getData(); //accessing data directly instead of function call
+    int inheight = input -> height - 1;
+    int inwidth = input -> width - 1;
 #pragma omp parallel for private(value)
-//tells open mp where to do the multithreading optimization: it multithreads out the loops below
-
-// iterating through the multidimensional array: which is the pixels of the picture and their RGB values
-for(int col = 1; col < inheight; ++col) { //change to ++i, add inheight, switch for loop
+//tells omp where to do the multithreading optimization
+for(int col = 1; col < inheight; ++col) { //change to ++i, add inwidth, switch loop
 for(int plane = 0; plane < 3; ++plane) { //change to ++i, switch for loop
 for(int row = 1; row < inwidth ; ++row) { //change to ++i, add inheight    
+  
+  
+    
           
         value = 0; //reset value to 0 each loop
+     
+      
+
 	
 	//for (int j = 0; j < dim; ++j) { //change to ++i //loop unrolling
 	  
 	//for (int i = 0; i < dim; ++i) { //change to ++i  
 
-	// Loop unrolling: get rid of loop by hardcoding the iterations
-	// You get rid of the comparison, incrementation, and initialization of iterator variable
-	// Below is just hardcoding for the loop unrolling, ex: doing math operations
-   	 value = value +  input -> color[col - 1][plane][row - 1] * getptr[0]; //changed get to getptr
-	 value = value +  input -> color[col][plane][row - 1] * getptr[1]; //changed get to getptr
-	 value = value +  input -> color[col + 1][plane][row - 1] * getptr[2]; //changed get to getptr
+  value = value +  input -> color[col - 1][plane][row - 1] * getptr[0]; //changed get to getptr
+  value = value +  input -> color[col][plane][row - 1] * getptr[1]; //changed get to getptr
+  value = value +  input -> color[col + 1][plane][row - 1] * getptr[2]; //changed get to getptr
 
-	 value = value +  input -> color[col - 1][plane][row] * getptr[3]; //changed get to getptr
-	 value = value +  input -> color[col][plane][row] * getptr[4]; //changed get to getptr
-	 value = value +  input -> color[col + 1][plane][row] * getptr[5]; //changed get to getptr
+ value = value +  input -> color[col - 1][plane][row] * getptr[3]; //changed get to getptr
+ value = value +  input -> color[col][plane][row] * getptr[4]; //changed get to getptr
+ value = value +  input -> color[col + 1][plane][row] * getptr[5]; //changed get to getptr
 
-	 value = value +  input -> color[col - 1][plane][row + 1] * getptr[6]; //changed get to gtptr
-	 value = value +  input -> color[col][plane][row + 1] * getptr[7]; //changed get to getptr
-	 value = value +  input -> color[col + 1][plane][row + 1] * getptr[8]; //changed get to getptr
+ value = value +  input -> color[col - 1][plane][row + 1] * getptr[6]; //changed get to gtptr
+ value = value +  input -> color[col][plane][row + 1] * getptr[7]; //changed get to getptr
+ value = value +  input -> color[col + 1][plane][row + 1] * getptr[8]; //changed get to getptr
 	//  }
 	//}
 
@@ -145,7 +145,7 @@ for(int row = 1; row < inwidth ; ++row) { //change to ++i, add inheight
         } else if ( value  > 255 ) { //added else if to check 1 instead of both
             value = 255;
         }
-	output -> color[col][plane][row] = value; //had to switch above loop to col, plane, row
+	output -> color[col][plane][row] = value;
       }
     }
   }
